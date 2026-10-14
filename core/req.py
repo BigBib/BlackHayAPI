@@ -40,6 +40,6 @@ def check(protocol: str, server: str = None) -> Tuple[bool, str, Optional[str], 
 __modules__ = [
     {
         "NameModule":"databay",
-        "Module":Loadder().DataBay
+        "ModuleLing":Loadder().Databay
     }
 ]
