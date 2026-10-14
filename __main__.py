@@ -1,36 +1,18 @@
 from core import *
-import sys, os
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import core
 
-d = r"""
- .+"+.+"+.+"+.+"+.+"+.+"+. 
-(      ____  _   _        )
- )    | __ )| | | |      ( 
-(     |  _ \| |_| |       )
- )    | |_) |  _  |      ( 
-(     |____/|_| |_|       )
- )                       ( 
-(                         )
- "+.+"+.+"+.+"+.+"+.+"+.+"
-"""
-
-def main()
-    os.system("cls") if os.sys.platform == "win32" else os.system("clear")
-    print(d)
-    work: bool = True
-    ignore_protocol: bool = True if "http" in sys.argv or "https" in sys.argv or "socks4" in sys.argv or "socks5" in sys.argv else False
-    while work:
-        cmd = input("> ")
-        if cmd == "exit" : work = False
-        elif cmd == "getServers" : print(RAM("OpenedServers").getData()[1])
-        elif cmd == "clear" : os.system("cls") if os.sys.platform == "win32" else os.system("clear")
-        elif cmd == "__loadRAM" : print(RAM.cells), print("\n%s" % (RAM.nameIndex))
-        else:
-            if ignore_protocol == True:
-                call = oper((cmd, sys.argv[2]))
-                print(call[1]) if sys.argv[1] == "--debug" else print()
-            else:
-                protocol = input("databay[protocol]> ")
-                call = oper((cmd, protocol))
-                print(call[1]) if sys.argv[1] == "--debug" else print()
-
-if __name__ == "__main__" : main()
+if userData[0] != True : print("Ошибка -> %s" % (userData[1]))
+else:
+    answer, proxys = core.databay.__main__("socks5")
+    if answer != True : print("Ошибка -> %s" % (proxys))
+    else:
+        if RAM("Servers").exists()[0] != True : RAM("Servers").create("list")
+        if RAM("OpenedServers").exists()[0] != True : RAM("OpenedServers").create("list")
+        with ThreadPoolExecutor(max_workers=len(RAM("Servers").getData()[1])) as thread:
+            futu = {thread.submit(check, "socks5", server["server"]): server for server in RAM("Servers").getData()[1]}
+            for f in as_completed(futu):
+                answer, msg, country, server = f.result()
+                print("%s - %s - %s [%s]" % (server, msg, answer, country))
+                if asnwer == True : RAM("OpenedServers").write({"Server":server, "country":country})
+        print(RAM("OpenedServers").getData()[1])
