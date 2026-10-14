@@ -7,12 +7,16 @@ class Loadder:
     def DataBay(self, protocol: str) -> Tuple[bool, str]:
         try:
             if RAM("Servers").exists()[0] != True:
-                status, msg = RAM("Servers").create()
-                if status != True : raise Exception(msg)
-                if msg:
-                    for server in msg:
-                        if server != "" : RAM("Servers").write({"Server":server})
-                    return (True, "ok")
+                c = RAM("Servers").create("list")
+                if c[0] != True : raise Exception("Не удаётся создать ячейку :%s:" % (c[1]))
+            stauts, msg = databay(protocol)
+            if status != True : return (False, msg)
+            if msg:
+                for server in msg:
+                    if server != "":
+                        write = RAM("Servers").write({"Server":server})
+                        if write[0] != True : return (False, write[1])
+                return (True, "ok")
         except Exception as e : return (False, e)
 
 def check(protocol: str, server: str = None) -> Tuple[bool, str, Optional[str], Optional[str]]:
