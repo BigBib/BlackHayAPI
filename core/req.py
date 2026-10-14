@@ -25,7 +25,7 @@ def check(protocol: str, server: str = None) -> Tuple[bool, str, Optional[str], 
     else:
         try:
             req = requests.get("http://ip-api.com/json" if protocol == "http" else "https://api.ipify.org/?format=json", proxies=proxy_body)
-            if req.status_code == 200
+            if req.status_code == 200:
                 body = bs4.BeautifulSoup(req.text, "html.parser").text
                 if body:
                     if json.loads(body)["query" if protocol == "http" else "ip"] != RAM("User").getData()[1]["IP"] : return (True, "Сервер работает", json.loads(body)["country"] if protocol == "http" else None, server)
