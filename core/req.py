@@ -1,23 +1,28 @@
 from .databay import __main__ as databay
 from .ram import RAM
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Tuple, Union, List, Optional
 import requests, bs4, json
 
-class Loadder:
-    def DataBay(self, protocol: str) -> Tuple[bool, str]:
-        try:
-            if RAM("Servers").exists()[0] != True:
-                c = RAM("Servers").create("list")
-                if c[0] != True : raise Exception("Не удаётся создать ячейку :%s:" % (c[1]))
-            stauts, msg = databay(protocol)
-            if status != True : return (False, msg)
-            if msg:
-                for server in msg:
-                    if server != "":
-                        write = RAM("Servers").write({"Server":server})
-                        if write[0] != True : return (False, write[1])
-                return (True, "ok")
-        except Exception as e : return (False, e)
+def loadUsers():
+    
+
+def load(protocol: str = "socks5") -> List[str]:
+    
+    l = databay()
+    if l[0] != True : raise Exception("Ошибка %s" % (l[1]))
+    if RAM("Servers").exists()[0] != True : RAM("Servers").create("list")
+    else : RAM("Servers").delData()
+    if RAM("OpenedServers").exists()[0] != True : RAM("OpenedServers").create("list")
+    else : RAM("OpenedServers").delData()
+    for server in l[1] : RAM("Servers").write(l[1])
+    with ThreadPoolExecutor(max_workers=len(RAM("Servers").getData[1])) as thread:
+        futu = {thread.submit(check(protocol, server["Server"])): server for server in RAM("Servers").getData()[1]}
+        for f in as_completed(futu):
+            asnwer, msg, country, server = f.result()
+            print("%s - %s - %s [%s]" % (server, msg, answer, country))
+            if answer == True : RAM("OpenedServers").write({"Server":server, "country":country})
+    return json.dumps(RAM("OpenedServers").getData()[1])
 
 def check(protocol: str, server: str = None) -> Tuple[bool, str, Optional[str], Optional[str]]:
     if server == None : return (False, "Сервер не указан", None, None)
@@ -40,10 +45,3 @@ def check(protocol: str, server: str = None) -> Tuple[bool, str, Optional[str], 
         except requests.exceptions.ConnectTimeout : return (False, "Время ожидания истекло", None, server)
         except requests.exceptions.ReadTimeout : return (False, "Время ожидания истекло", None, server)
         except requests.exceptions.ChunkedEncodingError : return (False, "Разрыв", None, server)
-
-__modules__ = [
-    {
-        "NameModule":"databay",
-        "ModuleLink":Loadder().Databay
-    }
-]
