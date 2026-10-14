@@ -2,7 +2,7 @@ from core import *
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import core
 
-if userData[0] != True : print("Ошибка -> %s" % (userData[1]))
+if userData()[0] != True : print("Ошибка -> %s" % (userData()[1]))
 else:
     answer, proxys = core.databay.__main__("socks5")
     if answer != True : print("Ошибка -> %s" % (proxys))
