@@ -7,7 +7,7 @@ class RAM:
     cells: List[Dict] = []
     nameIndex: Dict[str, int] = {}
 
-    def __init__(self, NameCell: str) self.name = NameCell
+    def __init__(self, NameCell: str) : self.name = NameCell
 
     def exists(self) -> bool:
         if self.name in self.nameIndex : return True
